@@ -1,0 +1,28 @@
+namespace :git_copy do
+
+  task :wrapper do
+    on roles :all do
+      set :local_tar_file, File.join(Dir.tmpdir, "#{fetch(:application)}.tar.gz")
+    end
+  end
+
+  task :check do; end
+  task :clone do; end
+
+  desc 'Create tar and upload to server'
+  task update: :'git_copy:wrapper' do
+    on roles :all do
+      system("git archive #{fetch(:branch)} | gzip --best > #{fetch(:local_tar_file)}")
+
+      upload! fetch(:local_tar_file), "#{fetch(:tmp_dir)}/#{File.basename(fetch(:local_tar_file))}"
+    end
+  end
+
+  desc 'Extract tar to release path'
+  task create_release: :'git_copy:update' do
+    on roles :all do
+      execute :mkdir, '-p', release_path
+      execute :tar, '-f', "#{fetch(:tmp_dir)}/#{File.basename(fetch(:local_tar_file))}", '-x -C', release_path
+    end
+  end
+end
