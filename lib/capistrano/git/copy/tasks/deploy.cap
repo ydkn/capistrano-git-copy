@@ -15,7 +15,7 @@ namespace :git_copy do
   desc 'Create tar and upload to server'
   task update: :'git_copy:wrapper' do
     system("rm -rf #{fetch(:local_repo_path)}")
-    system("git clone #{fetch(:repo_url)} #{fetch(:local_repo_path)}")
+    system("git clone #{fetch(:repo_url)} #{fetch(:local_repo_path)} > /dev/null 2> /dev/null")
 
     on roles :all do
       system("cd #{fetch(:local_repo_path)} && git archive #{fetch(:branch)} | gzip --best > #{fetch(:local_tar_file)}")
