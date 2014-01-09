@@ -2,6 +2,10 @@
 
 Creates a tar archive from the locale git repository and uploads it to the remote server.
 
+## Requirements
+
+* [git-archive-all](https://github.com/Kentzo/git-archive-all)
+
 ## Installation
 
 Add this line to your application's Gemfile:

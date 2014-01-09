@@ -4,6 +4,9 @@ namespace :git_copy do
 
   task :wrapper do
     on roles :all do
+      set :git_archive_all_bin, (fetch(:git_archive_all_bin) || `which git-archive-all`)
+      fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip == ''
+
       set :local_repo_path, File.join(Dir.tmpdir, "#{fetch(:application)}")
       set :local_tar_file, File.join(Dir.tmpdir, "#{fetch(:application)}.tar.gz")
     end
@@ -18,9 +21,13 @@ namespace :git_copy do
     system("git clone #{fetch(:repo_url)} #{fetch(:local_repo_path)} > /dev/null 2> /dev/null")
 
     on roles :all do
-      system("cd #{fetch(:local_repo_path)} && git archive #{fetch(:branch)} | gzip --best > #{fetch(:local_tar_file)}")
+      system("cd #{fetch(:local_repo_path)} && git checkout #{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
+      system("cd #{fetch(:local_repo_path)} && tar -xf __tmp.tar && cd __tmp && tar -czf #{fetch(:local_tar_file)} .")
 
       upload! fetch(:local_tar_file), "#{fetch(:tmp_dir)}/#{File.basename(fetch(:local_tar_file))}"
+
+      system("rm -rf #{fetch(:local_repo_path)}")
+      system("rm -rf #{fetch(:local_tar_file)}")
     end
   end
 
