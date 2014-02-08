@@ -1,14 +1,19 @@
-require 'tmpdir'
+namespace :load do
+  task :defaults do
+    set :git_archive_all_bin, -> {
+      bin = `which git-archive-all`
+      bin.strip.length > 0 ? bin : File.join(Capistrano::Git::Copy.root_path, 'vendor', 'bin', 'git-archive-all')
+    }
+
+    set :git_copy_tmp_path, -> { File.join(Dir.tmpdir, "#{fetch(:application)}_#{fetch(:stage)}") }
+  end
+end
 
 namespace :git_copy do
 
   task :wrapper do
     on roles :all do
-      set :git_archive_all_bin, (fetch(:git_archive_all_bin) || `which git-archive-all`)
-      fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip == ''
-
-      set :local_repo_path, File.join(Dir.tmpdir, "#{fetch(:application)}")
-      set :local_tar_file, File.join(Dir.tmpdir, "#{fetch(:application)}.tar.gz")
+      fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip.length == 0
     end
   end
 
@@ -17,25 +22,31 @@ namespace :git_copy do
 
   desc 'Create tar and upload to server'
   task update: :'git_copy:wrapper' do
-    system("rm -rf #{fetch(:local_repo_path)}")
-    system("git clone #{fetch(:repo_url)} #{fetch(:local_repo_path)} > /dev/null 2> /dev/null")
+    local_repo_path = File.join(fetch(:git_copy_tmp_path), 'repo')
+    local_tar_file = File.join(fetch(:git_copy_tmp_path), 'archive.tar.gz')
+
+    system("rm -rf #{fetch(:git_copy_tmp_path)}")
+    system("mkdir -p #{fetch(:git_copy_tmp_path)}")
+
+    system("git clone #{fetch(:repo_url)} #{local_repo_path}")
 
     on roles :all do
-      system("cd #{fetch(:local_repo_path)} && git checkout #{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
-      system("cd #{fetch(:local_repo_path)} && tar -xf __tmp.tar && cd __tmp && tar -czf #{fetch(:local_tar_file)} .")
+      system("cd #{local_repo_path} && git checkout #{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
+      system("cd #{local_repo_path} && tar -xf __tmp.tar && cd __tmp && tar -czf #{local_tar_file} .")
 
-      upload! fetch(:local_tar_file), "#{fetch(:tmp_dir)}/#{File.basename(fetch(:local_tar_file))}"
+      upload!(local_tar_file, "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
 
-      system("rm -rf #{fetch(:local_repo_path)}")
-      system("rm -rf #{fetch(:local_tar_file)}")
+      system("rm -rf #{local_repo_path}")
+      system("rm -rf #{local_tar_file}")
     end
   end
 
   desc 'Extract tar to release path'
   task create_release: :'git_copy:update' do
     on roles :all do
-      execute :mkdir, '-p', release_path
-      execute :tar, '-f', "#{fetch(:tmp_dir)}/#{File.basename(fetch(:local_tar_file))}", '-x -C', release_path
+      execute(:mkdir, '-p', release_path)
+      execute(:tar, '-f', "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz", '-x -C', release_path)
+      execute(:rm, '-f', "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
     end
   end
 end

@@ -6,30 +6,32 @@ Creates a tar archive from the locale git repository and uploads it to the remot
 
 * [git-archive-all](https://github.com/Kentzo/git-archive-all)
 
-## Installation
+## Setup
 
-Add this line to your application's Gemfile:
+Add the library to your `Gemfile`:
 
-    gem 'capistrano', '~> 3.0.0'
-    gem 'capistrano-git-copy'
+```ruby
+group :development do
+  gem 'capistrano-git-copy', require: false
+end
+```
 
-And then execute:
+And load it in your `Capfile`:
 
-    $ bundle
+```ruby
+require 'capistrano/git/copy'
+```
 
-Or install it yourself as:
-
-    $ gem install capistrano-git-copy
-
-## Usage
-
-Require in `Capfile` to use the default task:
-
-    require 'capistrano/git/copy'
-
-Now use `git_copy` as your SCM type:
+Now use `git_copy` as your SCM type in your `config/deploy.rb`:
 
     set :scm, :git_copy
+
+## Configuration
+
+You can modify any of the following Capistrano variables in your deploy.rb config.
+
+- `git_archive_all_bin`     - Set git-archive-all command. Defaults to git-archive-all found in $PATH or to included version.
+- `git_copy_tmp_path`       - Temp path used to clone the repository and create archive.
 
 ## Contributing
 
