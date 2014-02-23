@@ -10,7 +10,6 @@ namespace :load do
 end
 
 namespace :git_copy do
-
   task :wrapper do
     on roles :all do
       fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip.length == 0
@@ -22,21 +21,23 @@ namespace :git_copy do
 
   desc 'Create tar and upload to server'
   task update: :'git_copy:wrapper' do
-    local_repo_path = File.join(fetch(:git_copy_tmp_path), 'repo')
-    local_tar_file = File.join(fetch(:git_copy_tmp_path), 'archive.tar.gz')
+    tmp_path = fetch(:git_copy_tmp_path)
+    local_repo_path = File.join(tmp_path, 'repo')
+    local_tar_file = File.join(tmp_path, 'archive.tar.gz')
 
-    system("rm -rf #{fetch(:git_copy_tmp_path)}")
-    system("mkdir -p #{fetch(:git_copy_tmp_path)}")
+    local_repo_url = `cd #{local_repo_path} 2>/dev/null && git config --get remote.origin.url 2>/dev/null`.strip
 
-    system("git clone #{fetch(:repo_url)} #{local_repo_path}")
+    system("rm -rf #{tmp_path}") unless fetch(:repo_url) == local_repo_url
+    system("mkdir -p #{tmp_path}")
+
+    system("if [ -d #{local_repo_path} ]; then cd #{local_repo_path} && git fetch origin; else git clone #{fetch(:repo_url)} #{local_repo_path}; fi")
 
     on roles :all do
-      system("cd #{local_repo_path} && git checkout #{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
+      system("cd #{local_repo_path} && git reset --hard origin/#{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
       system("cd #{local_repo_path} && tar -xf __tmp.tar && cd __tmp && tar -czf #{local_tar_file} .")
 
       upload!(local_tar_file, "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
 
-      system("rm -rf #{local_repo_path}")
       system("rm -rf #{local_tar_file}")
     end
   end
