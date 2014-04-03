@@ -32,14 +32,14 @@ namespace :git_copy do
 
     system("if [ -d #{local_repo_path} ]; then cd #{local_repo_path} && git fetch origin; else git clone #{fetch(:repo_url)} #{local_repo_path}; fi")
 
+    system("cd #{local_repo_path} && git reset --hard origin/#{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
+    system("cd #{local_repo_path} && tar -xf __tmp.tar && cd __tmp && tar -czf #{local_tar_file} .")
+
     on roles :all do
-      system("cd #{local_repo_path} && git reset --hard origin/#{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
-      system("cd #{local_repo_path} && tar -xf __tmp.tar && cd __tmp && tar -czf #{local_tar_file} .")
-
       upload!(local_tar_file, "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
-
-      system("rm -rf #{local_tar_file}")
     end
+
+    system("rm -rf #{local_tar_file}")
   end
 
   desc 'Extract tar to release path'
