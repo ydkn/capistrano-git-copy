@@ -1,8 +1,8 @@
 namespace :load do
   task :defaults do
     set :git_archive_all_bin, -> {
-      bin = `which git-archive-all`
-      bin.strip.length > 0 ? bin : File.join(Capistrano::Git::Copy.root_path, 'vendor', 'bin', 'git-archive-all')
+      bin = `which git-archive-all`.strip
+      bin.length > 0 ? bin : File.join(Capistrano::Git::Copy.root_path, 'vendor', 'bin', 'git-archive-all')
     }
 
     set :git_copy_tmp_path, -> { File.join(Dir.tmpdir, "#{fetch(:application)}_#{fetch(:stage)}") }
@@ -11,9 +11,7 @@ end
 
 namespace :git_copy do
   task :wrapper do
-    on roles :all do
-      fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip.length == 0
-    end
+    fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip.length == 0
   end
 
   task :check do; end
@@ -32,10 +30,10 @@ namespace :git_copy do
 
     system("if [ -d #{local_repo_path} ]; then cd #{local_repo_path} && git fetch origin; else git clone #{fetch(:repo_url)} #{local_repo_path}; fi")
 
-    system("cd #{local_repo_path} && git reset --hard origin/#{fetch(:branch)} && git submodule init && git submodule update && git-archive-all __tmp.tar")
+    system("cd #{local_repo_path} && git reset --hard origin/#{fetch(:branch, 'master')} && git submodule init && git submodule update && #{fetch(:git_archive_all_bin)} __tmp.tar")
     system("cd #{local_repo_path} && tar -xf __tmp.tar && cd __tmp && tar -czf #{local_tar_file} .")
 
-    on roles :all do
+    on release_roles :all do
       upload!(local_tar_file, "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
     end
 
@@ -44,10 +42,19 @@ namespace :git_copy do
 
   desc 'Extract tar to release path'
   task create_release: :'git_copy:update' do
-    on roles :all do
+    on release_roles :all do
       execute(:mkdir, '-p', release_path)
       execute(:tar, '-f', "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz", '-x -C', release_path)
       execute(:rm, '-f', "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
+    end
+  end
+
+  desc 'Determine the revision that will be deployed'
+  task set_current_revision: :'git_copy:wrapper' do
+    revision = `git rev-parse --short #{fetch(:branch, 'master')} 2>/dev/null`.strip
+
+    on release_roles :all do
+      set :current_revision, revision
     end
   end
 end
