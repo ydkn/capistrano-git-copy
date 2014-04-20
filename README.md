@@ -2,10 +2,6 @@
 
 Creates a tar archive from the locale git repository and uploads it to the remote server.
 
-## Requirements
-
-* [git-archive-all](https://github.com/Kentzo/git-archive-all)
-
 ## Setup
 
 Add the library to your `Gemfile`:
@@ -32,6 +28,10 @@ You can modify any of the following Capistrano variables in your deploy.rb confi
 
 - `git_archive_all_bin`     - Set git-archive-all command. Defaults to git-archive-all found in $PATH or to included version.
 - `git_copy_tmp_path`       - Temp path used to clone the repository and create archive.
+
+## Notes
+
+* Uses [git-archive-all](https://github.com/Kentzo/git-archive-all) for bundling repositories.
 
 ## Contributing
 
