@@ -40,6 +40,17 @@ namespace :git_copy do
     system("rm -rf #{local_tar_file}")
   end
 
+  desc 'Clean up temp dir'
+  task :cleanup do
+    tmp_path = fetch(:git_copy_tmp_path)
+    if File.exists?(tmp_path)
+      system("rm -rf #{tmp_path}")
+      print "Removed #{tmp_path}\n"
+    else
+      print "Nothing to cleanup (#{tmp_path} not found on filesystem)\n"
+    end
+  end
+
   desc 'Extract tar to release path'
   task create_release: :'git_copy:update' do
     on release_roles :all do
