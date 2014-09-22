@@ -1,6 +1,6 @@
 # Capistrano::GIT::Copy
 
-Creates a tar archive from the locale git repository and uploads it to the remote server.
+Creates a tar archive locally from the git repository and uploads it to the remote server.
 
 ## Setup
 
@@ -12,7 +12,7 @@ group :development do
 end
 ```
 
-And load it in your `Capfile`:
+And require it in your `Capfile`:
 
 ```ruby
 require 'capistrano/git/copy'
@@ -24,14 +24,20 @@ Now use `git_copy` as your SCM type in your `config/deploy.rb`:
 
 ## Configuration
 
-You can modify any of the following Capistrano variables in your deploy.rb config.
+You can modify any of the following Capistrano variables in your `deploy.rb` config.
 
-- `git_archive_all_bin`     - Set git-archive-all command. Defaults to git-archive-all found in $PATH or to included version.
-- `git_copy_tmp_path`       - Temp path used to clone the repository and create archive.
+- `git_archive_all_bin`     - Set the path for the git-archive-all command. Defaults to git-archive-all found in $PATH or the included version as a fallback.
+- `git_copy_tmp_path`       - Temporary path where the repository is cloned to and the archive is created.
 
 ## Notes
 
 * Uses [git-archive-all](https://github.com/Kentzo/git-archive-all) for bundling repositories.
+
+## Code status
+
+* [![Gem Version](https://badge.fury.io/rb/capistrano-git-copy.png)](http://badge.fury.io/rb/capistrano-git-copy)
+* [![Dependencies](https://gemnasium.com/ydkn/capistrano-git-copy.png?travis)](https://gemnasium.com/ydkn/capistrano-git-copy)
+* [![PullReview stats](https://www.pullreview.com/github/ydkn/capistrano-git-copy/badges/master.svg?)](https://www.pullreview.com/github/ydkn/capistrano-git-copy/reviews/master)
 
 ## Contributing
 
