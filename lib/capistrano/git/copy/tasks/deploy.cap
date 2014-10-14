@@ -87,7 +87,8 @@ namespace :git_copy do
     end
 
     # reset repository
-    system("cd #{fetch(:local_repo_path)} && git reset --hard origin/#{fetch(:branch, 'master')} && git submodule init && git submodule update")
+    system("cd #{fetch(:local_repo_path)} && git reset --hard #{fetch(:branch, 'master')}")
+    system("cd #{fetch(:local_repo_path)} && git submodule init && git submodule update")
 
     # init and update submodules
     system("cd #{fetch(:local_repo_path)} && git submodule init && git submodule update")
