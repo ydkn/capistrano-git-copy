@@ -33,12 +33,6 @@ You can modify any of the following Capistrano variables in your `deploy.rb` con
 
 * Uses [git-archive-all](https://github.com/Kentzo/git-archive-all) for bundling repositories.
 
-## Code status
-
-* [![Gem Version](https://badge.fury.io/rb/capistrano-git-copy.png)](http://badge.fury.io/rb/capistrano-git-copy)
-* [![Dependencies](https://gemnasium.com/ydkn/capistrano-git-copy.png?travis)](https://gemnasium.com/ydkn/capistrano-git-copy)
-* [![PullReview stats](https://www.pullreview.com/github/ydkn/capistrano-git-copy/badges/master.svg?)](https://www.pullreview.com/github/ydkn/capistrano-git-copy/reviews/master)
-
 ## Contributing
 
 1. Fork it
@@ -46,3 +40,10 @@ You can modify any of the following Capistrano variables in your `deploy.rb` con
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
+&nbsp;
+
+[![Gem Version](https://img.shields.io/gem/v/capistrano-git-copy.svg)](https://rubygems.org/gems/capistrano-git-copy)
+[![Dependencies](https://img.shields.io/gemnasium/ydkn/capistrano-git-copy.svg)](https://gemnasium.com/ydkn/capistrano-git-copy)
+[![Code Climate](https://img.shields.io/codeclimate/github/ydkn/capistrano-git-copy.svg)](https://codeclimate.com/github/ydkn/capistrano-git-copy)
