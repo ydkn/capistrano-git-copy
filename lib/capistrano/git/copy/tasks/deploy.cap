@@ -62,7 +62,7 @@ namespace :git_copy do
       system("rm -rf #{tmp_path}")
       print "Removed #{tmp_path}\n"
     else
-      print "Nothing to cleanup (#{tmp_path} not found on filesystem)\n"
+      print "Nothing to cleanup (#{tmp_path} not found)\n"
     end
   end
 
@@ -79,19 +79,16 @@ namespace :git_copy do
     # prepare temp directory
     system("mkdir -p #{tmp_path}")
 
-    # clone or update repository
-    if File.exists?(fetch(:local_repo_path))
-      system("cd #{fetch(:local_repo_path)} && git fetch origin")
-    else
+    # clone repository if necessary
+    unless File.exists?(fetch(:local_repo_path))
       system("git clone #{fetch(:repo_url)} #{fetch(:local_repo_path)}")
     end
 
+    # update repository
+    system("cd #{fetch(:local_repo_path)} && git fetch origin && git fetch origin --tags")
+
     # reset repository
-    system("cd #{fetch(:local_repo_path)} && git reset --hard origin/#{fetch(:branch, 'master')} 2>/dev/null")
-    unless $?.to_i == 0
-      system("cd #{fetch(:local_repo_path)} && git reset --hard #{fetch(:branch, 'master')} 2>/dev/null")
-    end
-    system("cd #{fetch(:local_repo_path)} && git submodule init && git submodule update")
+    system("cd #{fetch(:local_repo_path)} && git reset --hard #{fetch(:branch, 'master')} 2>/dev/null")
 
     # init and update submodules
     system("cd #{fetch(:local_repo_path)} && git submodule init && git submodule update")
