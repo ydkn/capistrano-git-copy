@@ -86,6 +86,7 @@ namespace :git_copy do
 
     # update repository
     system("cd #{fetch(:local_repo_path)} && git fetch origin && git fetch origin --tags")
+    system("cd #{fetch(:local_repo_path)} && git pull >/dev/null 2>/dev/null")
 
     # reset repository
     system("cd #{fetch(:local_repo_path)} && git reset --hard #{fetch(:branch, 'master')} 2>/dev/null")
