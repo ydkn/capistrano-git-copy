@@ -37,11 +37,8 @@ module Capistrano
         #
         # @return void
         def update
-          branch = fetch(:branch, 'master')
-
           git :remote, :update
-          git :reset, '--hard', branch
-          git :reset, '--hard', "origin/#{branch}"
+          git :reset, '--hard', commit_hash
 
           # submodules
           git :submodule, :init
@@ -77,7 +74,7 @@ module Capistrano
         #
         # @return void
         def fetch_revision
-          git 'rev-list', '--max-count=1', '--abbrev-commit', fetch(:branch)
+          capture(:git, 'rev-list', '--max-count=1', '--abbrev-commit', fetch(:branch)).strip
         end
 
         # Cleanup repo cache
@@ -124,6 +121,10 @@ module Capistrano
           @context.execute(*args)
         end
 
+        def capture(*args)
+          @context.capture(*args)
+        end
+
         def upload!(*args)
           @context.upload!(*args)
         end
@@ -147,6 +148,18 @@ module Capistrano
             fetch(:stage),
             Digest::MD5.hexdigest(fetch(:repo_url))[0..7]
           ].compact.join('_')
+        end
+
+        def commit_hash
+          return @_commit_hash if @_commit_hash
+
+          branch = fetch(:branch, 'master')
+
+          if test! :git, 'rev-parse', "origin/#{branch}", '>/dev/null 2>/dev/null'
+            @_commit_hash = capture(:git, 'rev-parse', "origin/#{branch}").strip
+          else
+            @_commit_hash = capture(:git, 'rev-parse', branch).strip
+          end
         end
       end
     end
