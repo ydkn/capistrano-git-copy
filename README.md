@@ -1,3 +1,7 @@
+[![Gem Version](https://img.shields.io/gem/v/capistrano-git-copy.svg)](https://rubygems.org/gems/capistrano-git-copy)
+[![Dependencies](https://img.shields.io/gemnasium/ydkn/capistrano-git-copy.svg)](https://gemnasium.com/ydkn/capistrano-git-copy)
+[![Code Climate](https://img.shields.io/codeclimate/github/ydkn/capistrano-git-copy.svg)](https://codeclimate.com/github/ydkn/capistrano-git-copy)
+
 # Capistrano::GIT::Copy
 
 Creates a tar archive locally from the git repository and uploads it to the remote server.
@@ -33,10 +37,3 @@ Now use `git_copy` as your SCM type in your `config/deploy.rb`:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-
-&nbsp;
-
-[![Gem Version](https://img.shields.io/gem/v/capistrano-git-copy.svg)](https://rubygems.org/gems/capistrano-git-copy)
-[![Dependencies](https://img.shields.io/gemnasium/ydkn/capistrano-git-copy.svg)](https://gemnasium.com/ydkn/capistrano-git-copy)
-[![Code Climate](https://img.shields.io/codeclimate/github/ydkn/capistrano-git-copy.svg)](https://codeclimate.com/github/ydkn/capistrano-git-copy)
