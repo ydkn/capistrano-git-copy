@@ -1,102 +1,61 @@
-namespace :load do
-  task :defaults do
-    set :git_archive_all_bin, -> {
-      bin = `which git-archive-all`.strip
-      bin.length > 0 ? bin : File.join(Capistrano::Git::Copy.root_path, 'vendor', 'bin', 'git-archive-all')
-    }
-
-    set :git_copy_tmp_path, -> { File.join(Dir.tmpdir, "#{fetch(:application)}_#{fetch(:stage)}") }
-  end
-end
-
 namespace :git_copy do
-  task :wrapper do
-    fail "git-archive-all binary not found" if fetch(:git_archive_all_bin).strip.length == 0
-
-    invoke 'git_copy:update_local_working_copy'
+  def git_copy_utility
+    @git_copy_utility ||= Capistrano::Git::Copy::Utility.new(self)
   end
 
-  task :check do; end
-  task :clone do; end
+  task :wrapper do; end
 
-  desc 'Create tar and upload to server'
-  task update: :'git_copy:wrapper' do
-    # create tar with git-archive-all
-    system("cd #{fetch(:local_repo_path)} && #{fetch(:git_archive_all_bin)} __tmp.tar")
+  desc 'Check that the repository is reachable'
+  task check: :'git_copy:wrapper' do
+    run_locally do
+      git_copy_utility.check
+    end
+  end
 
-    # create tar.gz for upload
-    system("cd #{fetch(:local_repo_path)} && tar -xf __tmp.tar && cd __tmp && tar -czf #{fetch(:local_tar_file)} .")
+  desc 'Clone the repo to the cache'
+  task clone: :'git_copy:wrapper' do
+    run_locally do
+      if git_copy_utility.test
+        info t(:mirror_exists, at: git_copy_utility.repo_path)
+      else
+        git_copy_utility.clone
+      end
+    end
+  end
 
-    # upload to all servers
-    on release_roles :all do
-      upload!(fetch(:local_tar_file), "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
+  desc 'Update the repo mirror to reflect the origin state'
+  task update: :'git_copy:clone' do
+    run_locally do
+      within git_copy_utility.repo_path do
+        git_copy_utility.update
+      end
+    end
+  end
+
+  desc 'Copy repo to releases'
+  task create_release: :'git_copy:update' do
+    run_locally do
+      within git_copy_utility.repo_path do
+        git_copy_utility.prepare_release
+      end
     end
 
-    # delete temporary tar.gz archive
-    system("rm -rf #{fetch(:local_tar_file)}")
-  end
-
-  desc 'Extract tar to release path'
-  task create_release: :'git_copy:update' do
     on release_roles :all do
-      execute(:mkdir, '-p', release_path)
-      execute(:tar, '-f', "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz", '-x -C', release_path)
-      execute(:rm, '-f', "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}.tar.gz")
+      git_copy_utility.release
     end
   end
 
   desc 'Determine the revision that will be deployed'
-  task set_current_revision: :'git_copy:wrapper' do
-    revision = `cd #{fetch(:local_repo_path)} && git rev-parse --short HEAD 2>/dev/null`.strip
-
-    on release_roles :all do
-      set :current_revision, revision
+  task :set_current_revision do
+    run_locally do
+      set :current_revision, git_copy_utility.fetch_revision
     end
   end
 
-  desc 'Clean up temp dir'
+  desc 'Clean repo cache'
   task :cleanup do
-    tmp_path = fetch(:git_copy_tmp_path)
-
-    if File.exists?(tmp_path)
-      system("rm -rf #{tmp_path}")
-      print "Removed #{tmp_path}\n"
-    else
-      print "Nothing to cleanup (#{tmp_path} not found)\n"
+    run_locally do
+      git_copy_utility.cleanup
     end
-  end
-
-  task update_local_working_copy: :'git_copy:wrapper' do
-    tmp_path = fetch(:git_copy_tmp_path)
-
-    set :local_repo_path, File.join(tmp_path, 'repo')
-    set :local_tar_file,  File.join(tmp_path, 'archive.tar.gz')
-
-    # track if the repo url has changed
-    local_repo_url = `cd #{fetch(:local_repo_path)} 2>/dev/null && git config --get remote.origin.url 2>/dev/null`.strip
-    system("rm -rf #{tmp_path}") unless fetch(:repo_url) == local_repo_url
-
-    # prepare temp directory
-    system("mkdir -p #{tmp_path}")
-
-    # clone repository if necessary
-    unless File.exists?(fetch(:local_repo_path))
-      system("git clone #{fetch(:repo_url)} #{fetch(:local_repo_path)}")
-    end
-
-    # update repository
-    system("cd #{fetch(:local_repo_path)} && git fetch origin && git fetch origin --tags")
-
-    # reset repository
-    system("cd #{fetch(:local_repo_path)} && git reset --hard #{fetch(:branch, 'master')} 2>/dev/null")
-    system("cd #{fetch(:local_repo_path)} && git reset --hard origin/#{fetch(:branch, 'master')} 2>/dev/null")
-
-    # init and update submodules
-    system("cd #{fetch(:local_repo_path)} && git submodule init && git submodule update")
-    system("cd #{fetch(:local_repo_path)} && git submodule foreach --recursive git submodule update --init")
-
-    # clean up working directory
-    system("cd #{fetch(:local_repo_path)} && git clean -d -f")
-    system("cd #{fetch(:local_repo_path)} && git submodule foreach --recursive git clean -d -f")
   end
 end

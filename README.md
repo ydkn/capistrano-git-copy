@@ -22,13 +22,6 @@ Now use `git_copy` as your SCM type in your `config/deploy.rb`:
 
     set :scm, :git_copy
 
-## Configuration
-
-You can modify any of the following Capistrano variables in your `deploy.rb` config.
-
-- `git_archive_all_bin`     - Set the path for the git-archive-all command. Defaults to git-archive-all found in $PATH or the included version as a fallback.
-- `git_copy_tmp_path`       - Temporary path where the repository is cloned to and the archive is created.
-
 ## Notes
 
 * Uses [git-archive-all](https://github.com/Kentzo/git-archive-all) for bundling repositories.
