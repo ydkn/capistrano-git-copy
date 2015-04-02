@@ -1,7 +1,9 @@
+require 'capistrano/scm'
+
 # Capistrano
 module Capistrano
   # Git
-  module Git
+  class Git < Capistrano::SCM
     # Copy
     module Copy
       # gem version
