@@ -1,8 +1,9 @@
 require 'tmpdir'
 require 'digest/md5'
+require 'capistrano/scm'
 
 module Capistrano
-  module Git
+  class Git < Capistrano::SCM
     module Copy
       # Utility stuff to avoid cluttering of deploy.cap
       class Utility
