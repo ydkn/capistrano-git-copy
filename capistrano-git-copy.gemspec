@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'capistrano/git/copy/version'
+require 'capistrano/git_copy/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'capistrano-git-copy'
-  spec.version       = Capistrano::Git::Copy::VERSION
+  spec.version       = Capistrano::GitCopy::VERSION
   spec.authors       = ['Florian Schwab']
   spec.email         = ['me@ydkn.de']
   spec.description   = 'Copy local git repository deploy strategy for capistrano'
