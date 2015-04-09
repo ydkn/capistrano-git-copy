@@ -152,7 +152,8 @@ module Capistrano
       def commit_hash
         return @_commit_hash if @_commit_hash
 
-        branch = fetch(:branch, 'master').strip
+        branch = fetch(:branch, 'master')
+        branch.strip! if branch.is_a?(String)
 
         if test! :git, 'rev-parse', "origin/#{branch}", '>/dev/null 2>/dev/null'
           @_commit_hash = capture(:git, 'rev-parse', "origin/#{branch}").strip
