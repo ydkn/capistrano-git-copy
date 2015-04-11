@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Fixed
+  - executing deploy/scm task twice
+
 ## 0.810 (2015-04-11)
 ### Fixed
   - strip branch name only if it is a string
