@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased
+## 0.810 (2015-04-11)
 ### Fixed
-  - strip branch name only if it is a String
+  - strip branch name only if it is a string
 
 ## 0.8.0 (2015-04-07)
 ### Changes
