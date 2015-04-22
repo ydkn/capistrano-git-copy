@@ -145,8 +145,9 @@ module Capistrano
         [
           fetch(:application),
           fetch(:stage),
-          Digest::MD5.hexdigest(fetch(:repo_url))[0..7]
-        ].compact.join('_')
+          Digest::MD5.hexdigest(fetch(:repo_url))[0..7],
+          Digest::MD5.hexdigest(Dir.getwd)[0..7]
+        ].compact.join('_').gsub(/[^\w]/, '')
       end
 
       def commit_hash

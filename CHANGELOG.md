@@ -2,6 +2,7 @@
 
 ## Unreleased
 ### Fixed
+  - support application names with whitespaces and other non-path-friendly characters
   - executing deploy/scm task twice
 
 ## 0.810 (2015-04-11)
