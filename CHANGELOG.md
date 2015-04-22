@@ -1,11 +1,11 @@
 # Change Log
 
-## Unreleased
+## 1.0.0 (2015-04-22)
 ### Fixed
   - support application names with whitespaces and other non-path-friendly characters
   - executing deploy/scm task twice
 
-## 0.810 (2015-04-11)
+## 0.8.1 (2015-04-11)
 ### Fixed
   - strip branch name only if it is a string
 
