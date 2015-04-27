@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Fixed
+  - fixed usage of frozen string as branch (e.g. if using ENV values)
+
 ## 1.0.0 (2015-04-22)
 ### Fixed
   - support application names with whitespaces and other non-path-friendly characters
