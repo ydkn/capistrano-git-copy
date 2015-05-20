@@ -3,6 +3,7 @@
 ## Unreleased
 ### Fixed
   - fixed usage of frozen string as branch (e.g. if using ENV values)
+  - use working copy of cloned repository to fetch revision
 
 ## 1.0.0 (2015-04-22)
 ### Fixed
