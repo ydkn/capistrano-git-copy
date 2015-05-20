@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.0.1 (2015-05-20)
 ### Fixed
   - fixed usage of frozen string as branch (e.g. if using ENV values)
   - use working copy of cloned repository to fetch revision
