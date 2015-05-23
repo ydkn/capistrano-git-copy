@@ -133,8 +133,7 @@ module Capistrano
       end
 
       def git(*args)
-        args.unshift(:git)
-        execute(*args)
+        execute(:git, *args)
       end
 
       def git_archive_all_bin
