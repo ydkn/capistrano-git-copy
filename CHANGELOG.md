@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Fixed
+  - use commit hash to fetch revision for log
+
 ## 1.0.1 (2015-05-20)
 ### Fixed
   - fixed usage of frozen string as branch (e.g. if using ENV values)

@@ -46,7 +46,7 @@ namespace :git_copy do
   end
 
   desc 'Determine the revision that will be deployed'
-  task :set_current_revision do
+  task set_current_revision: :'git_copy:update' do
     run_locally do
       within git_copy_utility.repo_path do
         set :current_revision, git_copy_utility.fetch_revision

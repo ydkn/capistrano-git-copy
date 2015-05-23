@@ -73,7 +73,7 @@ module Capistrano
       #
       # @return void
       def fetch_revision
-        capture(:git, 'rev-list', '--max-count=1', '--abbrev-commit', fetch(:branch)).strip
+        capture(:git, 'rev-list', '--max-count=1', '--abbrev-commit', commit_hash).strip
       end
 
       # Cleanup repo cache
