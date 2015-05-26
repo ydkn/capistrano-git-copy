@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.0.2 (2015-05-26)
 ### Fixed
   - use commit hash to fetch revision for log
 
