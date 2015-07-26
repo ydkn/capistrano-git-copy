@@ -4,6 +4,8 @@
 
 # Capistrano::GitCopy
 
+[![Join the chat at https://gitter.im/ydkn/capistrano-git-copy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ydkn/capistrano-git-copy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Creates a tar archive locally from the git repository and uploads it to the remote server.
 
 ## Setup
