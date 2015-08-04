@@ -22,7 +22,7 @@ end
 And require it in your `Capfile`:
 
 ```ruby
-require 'capistrano/git/copy'
+require 'capistrano/git_copy'
 ```
 
 Now use `git_copy` as your SCM type in your `config/deploy.rb`:
