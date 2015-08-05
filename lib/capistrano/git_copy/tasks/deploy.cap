@@ -1,3 +1,9 @@
+namespace :load do
+  task :defaults do
+     set :with_submodules, true
+  end
+end
+
 namespace :git_copy do
   def git_copy_utility
     @git_copy_utility ||= Capistrano::GitCopy::Utility.new(self)

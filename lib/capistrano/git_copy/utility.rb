@@ -5,8 +5,11 @@ module Capistrano
   module GitCopy
     # Utility stuff to avoid cluttering of deploy.cap
     class Utility
+      attr_reader :with_submodules
+
       def initialize(context)
         @context = context
+        @with_submodules = fetch(:with_submodules)
       end
 
       # Check if repo cache exists
@@ -40,20 +43,28 @@ module Capistrano
         git :reset, '--hard', commit_hash
 
         # submodules
-        git :submodule, :init
-        git :submodule, :update
-        git :submodule, :foreach, '--recursive', :git, :submodule, :update, '--init'
+        if with_submodules
+          git :submodule, :init
+          git :submodule, :update
+          git :submodule, :foreach, '--recursive', :git, :submodule, :update, '--init'
+        end        
 
         # cleanup
         git :clean, '-d', '-f'
-        git :submodule, :foreach, '--recursive', :git, :clean, '-d', '-f'
+        if with_submodules
+          git :submodule, :foreach, '--recursive', :git, :clean, '-d', '-f'
+        end
       end
 
       # Create tar archive
       #
       # @return void
       def prepare_release
-        execute git_archive_all_bin, "--prefix=''", archive_path
+        if with_submodules
+          execute git_archive_all_bin, "--prefix=''", archive_path
+        else
+          git "archive --format=tar HEAD | gzip > #{ archive_path }"
+        end
       end
 
       # Upload and extract release
