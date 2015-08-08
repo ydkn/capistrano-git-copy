@@ -29,6 +29,12 @@ Now use `git_copy` as your SCM type in your `config/deploy.rb`:
 
     set :scm, :git_copy
 
+By default, it includes all submodules into the deployment package. However, 
+if they are not needed in a particular deployment, you can disable them with 
+a configuration option:
+
+    set :with_submodules, false
+
 ## Notes
 
 * Uses [git-archive-all](https://github.com/Kentzo/git-archive-all) for bundling repositories.
