@@ -3,6 +3,7 @@
 ## Unreleased
 ### Fixed
   - updated _git-archive-all_ to v1.11
+  - prevent tasks from being executed multiple times
 
 ## 1.0.2 (2015-05-26)
 ### Fixed
