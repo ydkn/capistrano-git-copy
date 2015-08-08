@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Fixed
+  - updated _git-archive-all_ to v1.11
+
 ## 1.0.2 (2015-05-26)
 ### Fixed
   - use commit hash to fetch revision for log
