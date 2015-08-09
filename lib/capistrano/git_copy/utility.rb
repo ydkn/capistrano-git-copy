@@ -9,7 +9,7 @@ module Capistrano
 
       def initialize(context)
         @context = context
-        @with_submodules = fetch(:with_submodules)
+        @with_submodules = fetch(:with_submodules, true)
       end
 
       # Check if repo cache exists
@@ -47,7 +47,7 @@ module Capistrano
           git :submodule, :init
           git :submodule, :update
           git :submodule, :foreach, '--recursive', :git, :submodule, :update, '--init'
-        end        
+        end
 
         # cleanup
         git :clean, '-d', '-f'
