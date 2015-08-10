@@ -3,6 +3,7 @@
 ## Unreleased
 ### Changes
   - Deprecated: require 'capistrano/git/copy'
+  - Allow to skip submodules (uses _git archive_ instead of _git-archive-all_)
 ### Fixed
   - updated _git-archive-all_ to v1.11
   - prevent tasks from being executed multiple times

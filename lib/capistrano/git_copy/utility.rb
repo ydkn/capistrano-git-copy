@@ -63,7 +63,7 @@ module Capistrano
         if with_submodules
           execute git_archive_all_bin, "--prefix=''", archive_path
         else
-          git "archive --format=tar HEAD | gzip > #{ archive_path }"
+          git "archive --format=tar HEAD | gzip > #{archive_path}"
         end
       end
 
