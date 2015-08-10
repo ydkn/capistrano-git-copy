@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.1.0 (2015-08-10)
 ### Changes
   - Deprecated: require 'capistrano/git/copy'
   - Allow to skip submodules (uses _git archive_ instead of _git-archive-all_)
