@@ -1,5 +1,10 @@
 # Change Log
 
+## Unreleased
+### Changes
+  - Added config option `git_excludes` to exclude files and directories
+  - updated _git-archive-all_ to v1.12
+
 ## 1.1.0 (2015-08-10)
 ### Changes
   - Deprecated: require 'capistrano/git/copy'
