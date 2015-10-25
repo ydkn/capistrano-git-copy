@@ -1,6 +1,7 @@
 namespace :load do
   task :defaults do
-     set :with_submodules, true
+     set :with_submodules, fetch(:with_submodules, true)
+     set :git_excludes,    fetch(:git_excludes, true)
   end
 end
 
