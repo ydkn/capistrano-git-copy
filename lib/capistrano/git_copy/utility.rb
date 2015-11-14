@@ -16,7 +16,18 @@ module Capistrano
       #
       # @return [Boolean] indicates if repo cache exists
       def test
-        test! " [ -d #{repo_path} ] "
+        if test! " [ -d #{repo_path} ] "
+          @context.within repo_path do
+            if test!(:git, :status, '>/dev/null 2>/dev/null')
+              true
+            else
+              execute :rm, '-rf', repo_path
+              false
+            end
+          end
+        else
+          false
+        end
       end
 
       # Check if repo is accessible

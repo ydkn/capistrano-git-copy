@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Changes
+  - Check if local repository mirror is working and reinitialize if necessary
+
 ## 1.1.0 (2015-08-10)
 ### Changes
   - Deprecated: require 'capistrano/git/copy'
