@@ -8,20 +8,20 @@ module Capistrano
       attr_reader :with_submodules
 
       def initialize(context)
-        @context = context
+        @context         = context
         @with_submodules = fetch(:with_submodules, true)
       end
 
-      # Check if repo cache exists
+      # Check if repo cache exists and is valid
       #
       # @return [Boolean] indicates if repo cache exists
       def test
-        if test! " [ -d #{repo_path} ] "
-          @context.within repo_path do
+        if test!("[ -d #{repo_path} ]")
+          @context.within(repo_path) do
             if test!(:git, :status, '>/dev/null 2>/dev/null')
               true
             else
-              execute :rm, '-rf', repo_path
+              execute(:rm, '-rf', repo_path)
               false
             end
           end
@@ -34,36 +34,36 @@ module Capistrano
       #
       # @return void
       def check
-        git :'ls-remote --heads', repo_url
+        git(:'ls-remote --heads', repo_url)
       end
 
       # Clone repo to cache
       #
       # @return void
       def clone
-        execute :mkdir, '-p', tmp_path
+        execute(:mkdir, '-p', tmp_path)
 
-        git :clone, fetch(:repo_url), repo_path
+        git(:clone, fetch(:repo_url), repo_path)
       end
 
       # Update repo and submodules to branch
       #
       # @return void
       def update
-        git :remote, :update
-        git :reset, '--hard', commit_hash
+        git(:remote, :update)
+        git(:reset, '--hard', commit_hash)
 
         # submodules
         if with_submodules
-          git :submodule, :init
-          git :submodule, :update
-          git :submodule, :foreach, '--recursive', :git, :submodule, :update, '--init'
+          git(:submodule, :init)
+          git(:submodule, :update)
+          git(:submodule, :foreach, '--recursive', :git, :submodule, :update, '--init')
         end
 
         # cleanup
-        git :clean, '-d', '-f'
+        git(:clean, '-d', '-f')
         if with_submodules
-          git :submodule, :foreach, '--recursive', :git, :clean, '-d', '-f'
+          git(:submodule, :foreach, '--recursive', :git, :clean, '-d', '-f')
         end
       end
 
@@ -72,9 +72,9 @@ module Capistrano
       # @return void
       def prepare_release
         if with_submodules
-          execute git_archive_all_bin, "--prefix=''", archive_path
+          execute(git_archive_all_bin, "--prefix=''", archive_path)
         else
-          git "archive --format=tar HEAD | gzip > #{archive_path}"
+          git(:archive, '--format=tar', 'HEAD', '|', 'gzip', "> #{archive_path}")
         end
       end
 
@@ -84,11 +84,11 @@ module Capistrano
       def release
         remote_archive_path = File.join(fetch(:deploy_to), File.basename(archive_path))
 
-        upload! archive_path, remote_archive_path
+        upload!(archive_path, remote_archive_path)
 
-        execute :mkdir, '-p', release_path
-        execute :tar, '-f', remote_archive_path, '-x', '-C', release_path
-        execute :rm, '-f', remote_archive_path
+        execute(:mkdir, '-p', release_path)
+        execute(:tar, '-f', remote_archive_path, '-x', '-C', release_path)
+        execute(:rm, '-f', remote_archive_path)
       end
 
       # Set deployed revision
@@ -102,9 +102,9 @@ module Capistrano
       #
       # @return void
       def cleanup
-        execute :rm, '-rf', tmp_path
+        execute(:rm, '-rf', tmp_path)
 
-        info 'Local repo cache was removed'
+        info('Local repo cache was removed')
       end
 
       # Temporary path for all git-copy operations
@@ -176,7 +176,7 @@ module Capistrano
 
         branch = fetch(:branch, 'master').to_s.strip
 
-        if test! :git, 'rev-parse', "origin/#{branch}", '>/dev/null 2>/dev/null'
+        if test!(:git, 'rev-parse', "origin/#{branch}", '>/dev/null 2>/dev/null')
           @_commit_hash = capture(:git, 'rev-parse', "origin/#{branch}").strip
         else
           @_commit_hash = capture(:git, 'rev-parse', branch).strip
