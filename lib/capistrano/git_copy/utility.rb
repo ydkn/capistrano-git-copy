@@ -11,7 +11,7 @@ module Capistrano
         @context         = context
         @with_submodules = fetch(:with_submodules, true)
         @repo_tree = fetch(:repo_tree, false)
-        @with_submodules = @repo_tree? false : true # If repo_tree is specified, set with_submodules to false
+        @with_submodules = @repo_tree? false : @with_submodules # If repo_tree is specified, set with_submodules to false
       end
 
       # Check if repo cache exists and is valid
