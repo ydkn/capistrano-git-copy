@@ -4,7 +4,7 @@
 ### Changes
   - Check if local repository mirror is working and reinitialize if necessary
   - Added config option `git_excludes` to exclude files and directories
-  - updated _git-archive-all_ to v1.12
+  - updated _git-archive-all_ to v1.13
 
 ## 1.1.0 (2015-08-10)
 ### Changes
