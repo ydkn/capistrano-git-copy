@@ -186,7 +186,7 @@ module Capistrano
       end
 
       def git_archive_all_bin
-        File.expand_path('../../../../vendor/git-archive-all/git-archive-all', __FILE__)
+        File.expand_path('../../../../vendor/git-archive-all/git_archive_all.py', __FILE__)
       end
 
       def deploy_id
