@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/ydkn/capistrano-git-copy'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files`.split($/) + %w( vendor/git-archive-all/git-archive-all )
+  spec.files         = `git ls-files`.split($/) + %w( vendor/git-archive-all/git_archive_all.py )
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
