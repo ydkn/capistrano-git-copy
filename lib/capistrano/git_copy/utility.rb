@@ -11,6 +11,8 @@ module Capistrano
       def initialize(context)
         @context         = context
         @with_submodules = fetch(:with_submodules, true)
+        @repo_tree = fetch(:repo_tree, false)
+        @with_submodules = @repo_tree? false : @with_submodules # If repo_tree is specified, set with_submodules to false
         @git_excludes    = fetch(:git_excludes, [])
       end
 
@@ -73,10 +75,11 @@ module Capistrano
       #
       # @return void
       def prepare_release
+        target = @repo_tree? "HEAD:#{@repo_tree}" : "HEAD"
         if with_submodules
           execute(git_archive_all_bin, "--prefix=''", archive_path)
         else
-          git(:archive, '--format=tar', 'HEAD', '|', 'gzip', "> #{archive_path}")
+          git(:archive, '--format=tar', target, '|', 'gzip', "> #{archive_path}")
         end
 
         if git_excludes.count > 0
