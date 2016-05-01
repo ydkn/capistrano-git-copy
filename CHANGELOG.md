@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Changes
+  - updated _git-archive-all_ to HEAD
+
 ## 1.2.0 (2016-01-25)
 ### Changes
   - Check if local repository mirror is working and reinitialize if necessary
