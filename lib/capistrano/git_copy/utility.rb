@@ -75,33 +75,14 @@ module Capistrano
       #
       # @return void
       def prepare_release
-        target = @repo_tree? "HEAD:#{@repo_tree}" : "HEAD"
+        target = @repo_tree? "HEAD:#{@repo_tree}" : 'HEAD'
         if with_submodules
           execute(git_archive_all_bin, "--prefix=''", archive_path)
         else
           git(:archive, '--format=tar', target, '|', 'gzip', "> #{archive_path}")
         end
 
-        if git_excludes.count > 0
-          archive_dir = File.join(tmp_path, 'archive')
-
-          execute :rm, '-rf', archive_dir
-          execute :mkdir, '-p', archive_dir
-          execute :tar, '-xzf', archive_path, '-C', archive_dir
-
-          git_excludes.each do |f|
-            file_path = File.join(archive_dir, f.gsub(/\A\//, ''))
-
-            unless File.exists?(file_path)
-              warn("#{f} does not exists!")
-              next
-            end
-
-            FileUtils.rm_rf(file_path)
-          end
-
-          execute :tar, '-czf', archive_path, '-C', archive_dir, '.'
-        end
+        exclude_files_from_archive if git_excludes.count > 0
       end
 
       # Upload and extract release
@@ -212,6 +193,27 @@ module Capistrano
           @_commit_hash = capture(:git, 'rev-parse', branch).strip
         end
       end
+    end
+
+    def exclude_files_from_archive
+      archive_dir = File.join(tmp_path, 'archive')
+
+      execute :rm, '-rf', archive_dir
+      execute :mkdir, '-p', archive_dir
+      execute :tar, '-xzf', archive_path, '-C', archive_dir
+
+      git_excludes.each do |f|
+        file_path = File.join(archive_dir, f.gsub(/\A\//, ''))
+
+        unless File.exists?(file_path)
+          warn("#{f} does not exists!")
+          next
+        end
+
+        FileUtils.rm_rf(file_path)
+      end
+
+      execute :tar, '-czf', archive_path, '-C', archive_dir, '.'
     end
   end
 end
