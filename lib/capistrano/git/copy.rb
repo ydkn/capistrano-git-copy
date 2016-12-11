@@ -1,1 +1,0 @@
-STDERR.puts("[DEPRECATION] Please change \"require 'capistrano/git/copy'\" to \"require 'capistrano/git_copy'\" in your Capfile, and make sure to disable the default require in your Gemfile with 'gem \"capistrano-git-copy\", require: false\"' to make this warning disappear.")

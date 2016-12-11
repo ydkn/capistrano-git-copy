@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.3.0 (2016-12-11)
+  - capistrano 3.7.x compatibility - see updated README.md
+
 ## 1.2.1 (2016-12-11)
 ### Changes
   - updated _git-archive-all_ to HEAD
