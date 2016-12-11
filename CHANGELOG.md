@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.2.1 (2016-12-11)
 ### Changes
   - updated _git-archive-all_ to HEAD
   - require _capistrano_ < 3.7.0 due to breaking changes
