@@ -3,6 +3,7 @@
 ## Unreleased
 ### Changes
   - updated _git-archive-all_ to HEAD
+  - require _capistrano_ < 3.7.0 due to breaking changes
 
 ## 1.2.0 (2016-01-25)
 ### Changes
