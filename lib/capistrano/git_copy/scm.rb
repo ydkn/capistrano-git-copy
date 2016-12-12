@@ -2,6 +2,8 @@ require 'capistrano/scm/plugin'
 
 module Capistrano
   module GitCopy
+    # SCM plugin for capistrano
+    # uses a local clone and uploads a tar archive to the server
     class SCM < ::Capistrano::SCM::Plugin
       # set default values
       def set_defaults
