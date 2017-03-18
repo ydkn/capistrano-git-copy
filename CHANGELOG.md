@@ -1,6 +1,11 @@
 # Change Log
 
+## Unreleased
+### Fixed
+  - missing require of tmpdir (see #22)
+
 ## 1.3.0 (2016-12-11)
+### Changes
   - capistrano 3.7.x compatibility - see updated README.md
 
 ## 1.2.1 (2016-12-11)

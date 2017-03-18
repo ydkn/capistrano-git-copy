@@ -1,3 +1,4 @@
+require 'tmpdir'
 require 'capistrano/scm/plugin'
 
 module Capistrano
