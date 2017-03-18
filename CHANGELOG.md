@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.3.1 (2017-03-18)
 ### Fixed
   - missing require of tmpdir (see #22)
 
