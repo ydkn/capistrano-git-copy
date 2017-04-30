@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.3.2 (2017-04-30)
+### Changes
+  - updated _git-archive-all_ to 1.16.4
+
 ## 1.3.1 (2017-03-18)
 ### Fixed
   - missing require of tmpdir (see #22)
