@@ -37,6 +37,8 @@ adding them to `git_excludes`:
 ```ruby
 append :git_excludes, 'config/database.yml.example', 'test', 'rspec'
 ```
+**git-archive-all does not support .gitattributes yet - please set with_submodules to false to make e.g. export-ignore work**
+
 ## Notes
 
 * Uses [git-archive-all](https://github.com/Kentzo/git-archive-all) for bundling repositories.
