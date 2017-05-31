@@ -10,7 +10,7 @@ module Capistrano
       def set_defaults
         set_if_empty :with_submodules, true
         set_if_empty :git_excludes,    []
-        set_if_empty :repo_tree,       false
+        set_if_empty :upload_path,     '.'
       end
 
       # define plugin tasks
@@ -86,12 +86,12 @@ module Capistrano
       #
       # @return void
       def prepare_release
-        target = fetch(:repo_tree) ? "HEAD:#{fetch(:repo_tree)}" : 'HEAD'
-
-        if fetch(:with_submodules)
+        if fetch(:upload_path) != '.'
+          backend.execute(:tar, '-czf', archive_path, '-C', fetch(:upload_path), '.')
+        elsif fetch(:with_submodules)
           backend.execute(git_archive_all_bin, "--prefix=''", archive_path)
         else
-          git(:archive, '--format=tar', target, '|', 'gzip', "> #{archive_path}")
+          git(:archive, '--format=tar', 'HEAD', '|', 'gzip', "> #{archive_path}")
         end
 
         exclude_files_from_archive if fetch(:git_excludes, []).count > 0
@@ -139,7 +139,7 @@ module Capistrano
       #
       # @return [String]
       def repo_cache_path
-        @_repo_cache_path ||= File.join(tmp_path, 'repo')
+        @_repo_cache_path ||= fetch(:git_repo_cach_path, File.join(tmp_path, 'repo'))
       end
 
       # Path to archive
@@ -183,9 +183,9 @@ module Capistrano
       def exclude_files_from_archive
         archive_dir = File.join(tmp_path, 'archive')
 
-        backend.execute :rm, '-rf', archive_dir
-        backend.execute :mkdir, '-p', archive_dir
-        backend.execute :tar, '-xzf', archive_path, '-C', archive_dir
+        backend.execute(:rm, '-rf', archive_dir)
+        backend.execute(:mkdir, '-p', archive_dir)
+        backend.execute(:tar, '-xzf', archive_path, '-C', archive_dir)
 
         fetch(:git_excludes, []).each do |f|
           file_path = File.join(archive_dir, f.gsub(/\A\//, ''))
@@ -199,7 +199,7 @@ module Capistrano
           FileUtils.rm_rf(file_path)
         end
 
-        backend.execute :tar, '-czf', archive_path, '-C', archive_dir, '.'
+        backend.execute(:tar, '-czf', archive_path, '-C', archive_dir, '.')
       end
     end
   end

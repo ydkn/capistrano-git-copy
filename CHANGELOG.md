@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Feature
+  - deploy subdirectory
+
 ## 1.3.2 (2017-04-30)
 ### Changes
   - updated _git-archive-all_ to 1.16.4

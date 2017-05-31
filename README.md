@@ -26,6 +26,7 @@ require 'capistrano/git_copy'
 install_plugin Capistrano::GitCopy::SCM
 ```
 
+### Submodules
 By default, it includes all submodules into the deployment package. However,
 if they are not needed in a particular deployment, you can disable them with
 a configuration option:
@@ -38,6 +39,28 @@ adding them to `git_excludes`:
 append :git_excludes, 'config/database.yml.example', 'test', 'rspec'
 ```
 **git-archive-all does not support .gitattributes yet - please set with_submodules to false to make e.g. export-ignore work**
+
+### Subdirectories
+
+It is also possible to deploy only a subdirectory to the remote server:
+```ruby
+set :upload_path, 'dist'
+```
+This makes it possible to compile or build something locally and only upload the result
+```ruby
+namespace :deploy do
+  before :'git_copy:create_release', :'deploy:build_app'
+
+  task :build_app do
+    run_locally do
+      within(fetch(:git_copy_plugin).repo_cache_path) do
+        execute :npm, :install
+        execute :npm, :run, :'build-dist'
+      end
+    end
+  end
+end
+```
 
 ## Notes
 
