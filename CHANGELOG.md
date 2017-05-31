@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.4.0 (2017-05-31)
 ### Feature
   - deploy subdirectory
 
