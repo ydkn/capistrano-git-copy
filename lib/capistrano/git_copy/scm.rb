@@ -8,6 +8,7 @@ module Capistrano
     class SCM < ::Capistrano::SCM::Plugin
       # set default values
       def set_defaults
+        set_if_empty :with_clean, true
         set_if_empty :with_submodules, true
         set_if_empty :git_excludes,    []
         set_if_empty :upload_path,     '.'
@@ -75,7 +76,9 @@ module Capistrano
         end
 
         # cleanup
-        git(:clean, '-d', '-f')
+        if fetch(:with_clean)
+          git(:clean, '-d', '-f')
+        end
 
         if fetch(:with_submodules)
           git(:submodule, :foreach, '--recursive', :git, :clean, '-d', '-f')
