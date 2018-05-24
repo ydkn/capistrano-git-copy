@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.5.0 (2018-05-24)
 ### Feature
   - add option to switch off running git clean (#25)
 ### Changes
