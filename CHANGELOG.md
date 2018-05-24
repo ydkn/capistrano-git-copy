@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+### Feature
+  - add option to switch off running git clean (#25)
+
 ## 1.4.0 (2017-05-31)
 ### Feature
   - deploy subdirectory
