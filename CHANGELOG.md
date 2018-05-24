@@ -3,6 +3,9 @@
 ## Unreleased
 ### Feature
   - add option to switch off running git clean (#25)
+### Changes
+  - updated _git-archive-all_ to 1.17.1
+  - add support for .gitattributes and export-ignore (#23)
 
 ## 1.4.0 (2017-05-31)
 ### Feature
